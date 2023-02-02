@@ -101,7 +101,7 @@ const FileInputBase: ForwardRefRenderFunction<
 
       try {
         const response = await api.post(
-          'https://api.imgbb.com/1/upload',
+          '/imgbb',
           formData,
           config
         );
