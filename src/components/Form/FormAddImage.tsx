@@ -1,5 +1,5 @@
 import { Box, Button, Stack, useToast } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
@@ -53,7 +53,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   const queryClient = useQueryClient();
   const mutation = useMutation(
     // TODO MUTATION API POST REQUEST,
-    async (data: ImageFormData) => api.post('api/images', { data }),
+    async (data: ImageFormData) => api.post('api/images', data),
     {
       // TODO ONSUCCESS MUTATION
       onSuccess: () => queryClient.invalidateQueries('images')
@@ -64,7 +64,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
     useForm();
   const { errors } = formState;
 
-  const onSubmit = async (data: Record<string, unknown>): Promise<void> => {
+  const onSubmit: SubmitHandler<ImageFormData> = async (data): Promise<void> => {
     try {
       // TODO SHOW ERROR TOAST IF IMAGE URL DOES NOT EXISTS
       if (!imageUrl) {
@@ -78,14 +78,14 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
         return;
       }
       
-      const formImgData: ImageFormData = {
+      const imgFormData: ImageFormData = {
         url: imageUrl,
-        title: data.title as string,
-        description: data.description as string
+        title: data.title,
+        description: data.description
       }
       
       // TODO EXECUTE ASYNC MUTATION
-      await mutation.mutateAsync(formImgData);
+      await mutation.mutateAsync(imgFormData);
 
       // TODO SHOW SUCCESS TOAST
       toast({
